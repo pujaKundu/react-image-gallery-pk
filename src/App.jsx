@@ -1,11 +1,12 @@
 import { useState } from "react";
 import "./App.css";
 import { imagesData as initialImagesData } from "./constants/images";
+import icon from './assets/icons/checkbox.png'
 
 function App() {
   const [imagesData, setImagesData] = useState(initialImagesData);
   const [selectedImages, setSelectedImages] = useState([]);
-  const [showCheckbox, setShowCheckbox] = useState(false);
+  
 
   //toggles image selection
   const handleImageSelect = (imageId) => {
@@ -30,15 +31,30 @@ function App() {
    
   return (
     <>
-      {selectedImages.length > 0 && (
-        <button
-          onClick={handleDelete}
-          className="absolute top-0 right-11 w-[150px] h-[50px] m-5 bg-red-600 hover:bg-red-700 text-white"
-        >
-          Delete files
-        </button>
+      {selectedImages.length > 0 ? (
+        <div className="flex justify-between  mt-5">
+          <div className="flex items-center">
+            <span>
+              <img src={icon} alt="icon" className="w-5 h-5 mr-3" />
+            </span>
+            {selectedImages.length === 1 ? (
+              <span>{selectedImages.length} file selected</span>
+            ) : (
+              <span>{selectedImages.length} files selected</span>
+            )}
+          </div>
+          <button
+            onClick={handleDelete}
+            className=" w-[150px] h-[50px] bg-red-600 hover:bg-red-700 text-white"
+          >
+            Delete files
+          </button>
+        </div>
+      ) : (
+        <h3>Gallery</h3>
       )}
-      <div className="grid grid-cols-5 gap-4 mt-12">
+
+      <div className="grid lg:grid-cols-5 sm:grid-cols-3  gap-4 mt-12">
         {imagesData.map((image, index) => (
           <div
             key={image?.id}
@@ -55,10 +71,14 @@ function App() {
               <img
                 src={image?.url}
                 alt={`Image ${image?.id}`}
-                className="w-full h-full object-cover"
+                className={`w-full h-full object-cover ${
+                  selectedImages.includes(image?.id)
+                    ? "opacity-50"
+                    : "opacity-100"
+                }`}
               />
               {/* for grayscale effect */}
-              <div className="absolute top-0 left-0 w-full h-full bg-gray-800 opacity-0 hover:opacity-50 hover:rounded-lg transition duration-300 ease-in-out transform hover:grayscale"></div>
+              <div className="absolute top-0 left-0 w-full h-full bg-slate-900 opacity-0 hover:opacity-50 hover:rounded-lg transition duration-300 ease-in-out transform hover:grayscale"></div>
             </div>
           </div>
         ))}
