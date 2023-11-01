@@ -5,6 +5,7 @@ import { imagesData as initialImagesData } from "./constants/images";
 function App() {
   const [imagesData, setImagesData] = useState(initialImagesData);
   const [selectedImages, setSelectedImages] = useState([]);
+  const [showCheckbox, setShowCheckbox] = useState(false);
 
   //toggles image selection
   const handleImageSelect = (imageId) => {
@@ -26,6 +27,7 @@ function App() {
     setSelectedImages([]);
   };
 
+   
   return (
     <>
       {selectedImages.length > 0 && (
@@ -43,18 +45,20 @@ function App() {
             className={index === 0 ? "col-span-2 row-span-2" : ""}
             onClick={() => handleImageSelect(image.id)}
           >
-            <div className="border">
+            <div className="relative border rounded-lg ">
+              <input
+                type="checkbox"
+                className="absolute top-0 left-0 ml-8 mt-7 "
+                onChange={() => handleImageSelect(image?.id)}
+                checked={selectedImages.includes(image?.id)}
+              />
               <img
                 src={image?.url}
                 alt={`Image ${image?.id}`}
                 className="w-full h-full object-cover"
               />
-              <input
-                type="checkbox"
-                className=" top-2 left-2"
-                onChange={() => handleImageSelect(image?.id)}
-                checked={selectedImages.includes(image?.id)}
-              />
+              {/* for grayscale effect */}
+              <div className="absolute top-0 left-0 w-full h-full bg-gray-800 opacity-0 hover:opacity-50 hover:rounded-lg transition duration-300 ease-in-out transform hover:grayscale"></div>
             </div>
           </div>
         ))}
