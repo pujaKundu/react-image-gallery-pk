@@ -1,13 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { imagesData as initialImagesData } from "./constants/images";
 import AddImage from "./components/AddImage";
 import Header from "./components/Header";
+import Loader from "./components/Loader";
 
 function App() {
   const [imagesData, setImagesData] = useState(initialImagesData);
   const [selectedImages, setSelectedImages] = useState([]);
   const [draggedImage, setDraggedImage] = useState(null);
+   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    // Simulating an API request delay for loading images
+    const fetchImages = () => {
+      setTimeout(() => {
+        setImagesData(initialImagesData);
+        setLoading(false); // Set loading to false once images are loaded
+      }, 2000); // Simulating a 2-second loading time
+    };
+
+    fetchImages();
+  }, []);
   //toggles image selection
   const handleImageSelect = (imageId) => {
     //deselects image
@@ -50,58 +63,78 @@ function App() {
   };
 
   
-  return (
-    <div className="bg-gradient-to-tr from-white via-purple-100 to-blue-100 p-5">
-      {selectedImages.length > 0 ? (
-        <Header length={selectedImages.length} handleDelete={handleDelete} />
-      ) : (
-        <h3 className="font-bold text-2xl p-3 text-slate-900">Pictoria</h3>
-      )}
+ return loading ? (
+   <div
+     style={{
+       display: "flex",
+       justifyContent: "center",
+       alignItems: "center",
+       height: "100vh",
+       width:'99vw'
+     }}
+   >
+     <Loader />
+   </div>
+ ) : (
+   <div className="bg-gradient-to-tr from-white via-purple-100 to-blue-100 p-5">
+     {selectedImages.length > 0 ? (
+       <Header length={selectedImages.length} handleDelete={handleDelete} />
+     ) : (
+       <h3 className="font-bold text-2xl p-3 text-slate-900">Pictoria</h3>
+     )}
 
-      <div className="grid lg:grid-cols-5 md:grid-cols-2   gap-4 mt-12 ">
-        {imagesData.map((image, index) => (
-          <div
-            key={image?.id}
-            className={
-              index === 0
-                ? "col-span-2 row-span-2 rounded hover:scale-105 transition-all ease-in-out duration-30"
-                : ""
-            }
-            onClick={() => handleImageSelect(image.id)}
-            onDragOver={() => handleDragOver(index)}
-          >
-            <div
-              draggable
-              onDragStart={(e) => handleDragStart(e, image)}
-              onDragEnd={handleDragEnd}
-              className={`relative border rounded-lg ${
-                image.id === draggedImage?.id ? "opacity-50" : "opacity-100"
-              }`}
-            >
-              <input
-                type="checkbox"
-                className="absolute top-0 left-0 ml-8 mt-7 "
-                onChange={() => handleImageSelect(image?.id)}
-                checked={selectedImages.includes(image?.id)}
-              />
-              <img
-                src={image?.url}
-                alt={`Image ${image?.id}`}
-                className={`w-full h-full object-cover shadow-md rounded-lg ${
-                  selectedImages.includes(image?.id)
-                    ? "opacity-50"
-                    : "opacity-100"
-                }`}
-              />
-              {/* for grayscale effect */}
-              <div className="absolute top-0 left-0 w-full h-full bg-slate-900 opacity-0 hover:opacity-50 hover:rounded-lg transition duration-300 ease-in-out transform hover:grayscale"></div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <AddImage imagesData={imagesData} setImagesData={setImagesData} />
-    </div>
-  );
+     <div className="grid lg:grid-cols-5 md:grid-cols-2 gap-4 mt-12 ">
+       {imagesData.map((image, index) => (
+         <div
+           key={image?.id}
+           className={
+             index === 0
+               ? "col-span-2 row-span-2 rounded hover:scale-105 transition-all ease-in-out duration-30"
+               : ""
+           }
+           onClick={() => handleImageSelect(image.id)}
+           onDragOver={() => handleDragOver(index)}
+         >
+           <div
+             draggable
+             onDragStart={(e) => handleDragStart(e, image)}
+             onDragEnd={handleDragEnd}
+             className={`relative border rounded-lg ${
+               image.id === draggedImage?.id ? "opacity-50" : "opacity-100"
+             }`}
+           >
+             <input
+               type="checkbox"
+               className="absolute top-0 left-0 ml-8 mt-7"
+               onChange={() => handleImageSelect(image?.id)}
+               checked={selectedImages.includes(image?.id)}
+             />
+             <img
+               src={image?.url}
+               alt={`Image ${image?.id}`}
+               className={`w-full h-full object-cover shadow-md rounded-lg ${
+                 selectedImages.includes(image?.id)
+                   ? "opacity-50"
+                   : "opacity-100"
+               }`}
+             />
+             {/* for grayscale effect */}
+             <div className="absolute top-0 left-0 w-full h-full bg-slate-900 opacity-0 hover:opacity-50 hover:rounded-lg transition duration-300 ease-in-out transform hover:grayscale"></div>
+           </div>
+         </div>
+       ))}
+     </div>
+
+     <AddImage imagesData={imagesData} setImagesData={setImagesData} />
+   </div>
+ );
 }
 
 export default App;
+
+
+
+
+
+
+
