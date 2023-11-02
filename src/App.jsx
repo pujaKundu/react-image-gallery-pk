@@ -55,7 +55,7 @@ function App() {
       {selectedImages.length > 0 ? (
         <Header length={selectedImages.length} handleDelete={handleDelete} />
       ) : (
-        <h3 className="font-bold text-2xl p-3">Pictoria</h3>
+        <h3 className="font-bold text-2xl p-3 text-slate-900">Pictoria</h3>
       )}
 
       <div className="grid lg:grid-cols-5 md:grid-cols-2   gap-4 mt-12 ">
